@@ -1,4 +1,5 @@
 ﻿using emburns.Models;
+using emburns.PotatoModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,28 +24,14 @@ namespace emburns.Controllers
         [HttpGet("name")]
         public async Task<IActionResult> GetByUsername(string username)
         {
+            //RankName = _context.Ranks.Where(r => u.Rank >= r.RequiredPoints).FirstOrDefault().Fullname,
+
             try
             {
                 var userList = await _context.Users
-                    .Select(u => new
-                    {
-                        u.Id,
-                        User = u.User1,
-                        u.Name,
-                        u.Lastname,
-                        u.Avatar,
-                        u.Background,
-                        u.Cover,
-                        u.Country,
-                        u.Quote,
-                        u.Rank,
-                        u.Donation,
-                        u.Created,
-                        RankName = _context.Ranks.Where(r => u.Rank >= r.RequiredPoints).FirstOrDefault().Fullname,
-
-                    })
                     .OrderBy(u => u.Id)
                     .Where(u => u.Name == username)
+                    .Select(u => new UserBaseQuery(u))
                     .ToListAsync();
 
                 var userItem = userList.FirstOrDefault();
@@ -69,25 +56,9 @@ namespace emburns.Controllers
             {
 
                 var userList = await _context.Users
-                    .Select(u => new
-                    {
-                        u.Id,
-                        User = u.User1,
-                        u.Name,
-                        u.Lastname,
-                        u.Avatar,
-                        u.Background,
-                        u.Cover,
-                        u.Country,
-                        u.Quote,
-                        u.Rank,
-                        u.Donation,
-                        u.Created,
-                        RankName = _context.Ranks.Where(r => u.Rank >= r.RequiredPoints).FirstOrDefault().Fullname,
-
-                    })
                     .OrderBy(u => u.Id)
                     .Where(u => u.Id == id)
+                    .Select(u => new UserBaseQuery(u))
                     .ToListAsync();
 
                 var userItem = userList.FirstOrDefault();
