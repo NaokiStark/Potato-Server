@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.32804.182
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "emburns", "emburns\emburns.csproj", "{2DFB183A-407B-4ABD-997A-C5ABF87ACF1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "emburns", "emburns\emburns.csproj", "{2DFB183A-407B-4ABD-997A-C5ABF87ACF1D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{1505AF9D-78D4-4AC2-9708-388258ED8619}"
+	ProjectSection(SolutionItems) = preProject
+		scaffold.ps1 = scaffold.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

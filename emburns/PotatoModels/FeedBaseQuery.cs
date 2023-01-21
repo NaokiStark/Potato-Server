@@ -1,4 +1,5 @@
 ﻿using emburns.Models;
+using emburns.PotatoModels.Extras;
 
 namespace emburns.PotatoModels
 {
@@ -17,11 +18,13 @@ namespace emburns.PotatoModels
         public int Loves { get; set; }
         public bool Nsfw { get; set; }
         public bool Sticky { get; set; }
+        public UserBaseQuery? ParentUser { get; set; }
 
         public virtual UserBaseQuery User { get; set; }
 
         public FeedBaseQuery(Feed feed)
         {
+
             Id = feed.Id;
             Userid = feed.Userid;
             Text = feed.Text;
@@ -36,6 +39,14 @@ namespace emburns.PotatoModels
             Nsfw = feed.Nsfw;
             Sticky = feed.Sticky;
             User = new UserBaseQuery(feed.User);
+            if (feed.Via.Id == 0)
+            {
+                ParentUser = null;
+            }
+            else
+            {
+                ParentUser = new UserBaseQuery(feed.Via);
+            }
         }
     }
 }

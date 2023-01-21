@@ -39,6 +39,7 @@ namespace emburns.Models
         public virtual DbSet<UsersRequest> UsersRequests { get; set; } = null!;
 
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("utf8mb4_general_ci")
@@ -183,6 +184,10 @@ namespace emburns.Models
 
                 entity.HasIndex(e => e.Userid, "FEED_USER_FK");
 
+                entity.HasIndex(e => e.ParentId, "FK_PARENT_ID");
+
+                entity.HasIndex(e => e.ViaId, "via_id");
+
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
@@ -226,19 +231,30 @@ namespace emburns.Models
                     .HasColumnName("userid");
 
                 entity.Property(e => e.ViaId)
-                    .HasColumnType("int(255)")
+                    .HasColumnType("int(11)")
                     .HasColumnName("via_id");
 
                 entity.Property(e => e.Wall)
                     .HasColumnType("int(255)")
                     .HasColumnName("wall");
 
-                /*
+                entity.HasOne(d => d.Parent)
+                    .WithMany(p => p.InverseParent)
+                    .HasForeignKey(d => d.ParentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PARENT_ID");
+
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Feeds)
+                    .WithMany(p => p.FeedUsers)
                     .HasForeignKey(d => d.Userid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FEED_USER_FK");*/
+                    .HasConstraintName("FEED_USER_FK");
+
+                entity.HasOne(d => d.Via)
+                    .WithMany(p => p.FeedVia)
+                    .HasForeignKey(d => d.ViaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_VIA_ID");
             });
 
             modelBuilder.Entity<Follow>(entity =>

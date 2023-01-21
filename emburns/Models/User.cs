@@ -5,6 +5,11 @@ namespace emburns.Models
 {
     public partial class User
     {
+        public User()
+        {
+            FeedUsers = new HashSet<Feed>();
+            FeedVia = new HashSet<Feed>();
+        }
 
         public int Id { get; set; }
         public string User1 { get; set; } = null!;
@@ -29,5 +34,7 @@ namespace emburns.Models
         public int RemainPoints { get; set; }
         public int PointDate { get; set; }
 
+        public virtual ICollection<Feed> FeedUsers { get; set; }
+        public virtual ICollection<Feed> FeedVia { get; set; }
     }
 }

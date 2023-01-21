@@ -1,4 +1,5 @@
 ﻿using emburns.Models;
+using emburns.PotatoModels.Extras;
 
 namespace emburns.PotatoModels
 {
@@ -16,6 +17,7 @@ namespace emburns.PotatoModels
         public bool Admin { get; set; }
         public decimal Rank { get; set; }
         public string Quote { get; set; } = null!;
+        public string? RankName { get; set; }
         public DateOnly Donation { get; set; }
 
         public UserBaseQuery(User userModel)
@@ -33,7 +35,8 @@ namespace emburns.PotatoModels
             Admin = userModel.Admin;
             Rank = userModel.Rank;
             Quote = userModel.Quote;
-            Donation = userModel.Donation;
+            Donation = userModel.Donation;            
         }
+
     }
 }
