@@ -7,8 +7,12 @@ namespace emburns.Models
     {
         public User()
         {
+            Comments = new HashSet<Comment>();
+            Communities = new HashSet<Community>();
             FeedUsers = new HashSet<Feed>();
             FeedVia = new HashSet<Feed>();
+            PostComments = new HashSet<PostComment>();
+            Posts = new HashSet<Post>();
         }
 
         public int Id { get; set; }
@@ -34,7 +38,11 @@ namespace emburns.Models
         public int RemainPoints { get; set; }
         public int PointDate { get; set; }
 
+        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Community> Communities { get; set; }
         public virtual ICollection<Feed> FeedUsers { get; set; }
         public virtual ICollection<Feed> FeedVia { get; set; }
+        public virtual ICollection<PostComment> PostComments { get; set; }
+        public virtual ICollection<Post> Posts { get; set; }
     }
 }

@@ -66,7 +66,7 @@ namespace emburns.Controllers
         /// <param name="id">Feed id</param>
         /// <returns>Ok() or StatusCode(500)</returns>
         [HttpGet]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(int id = 617)
         {
             try
             {
@@ -74,6 +74,8 @@ namespace emburns.Controllers
                 var feedItems = await _context.Feeds.AsNoTracking()
                     .Include(f => f.User)
                     .Include(f => f.Via)
+                    .Include(f => f.Comments)
+                    .ThenInclude(f => f.User)
                     .Where(f => f.Id == id)
                     .Select(f => new FeedBaseQuery(f))
                     .ToListAsync();

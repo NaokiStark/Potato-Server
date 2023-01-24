@@ -19,8 +19,9 @@ namespace emburns.PotatoModels
         public bool Nsfw { get; set; }
         public bool Sticky { get; set; }
         public UserBaseQuery? ParentUser { get; set; }
-
+        public List<CommentBaseQuery>? Comments { get; set; }
         public virtual UserBaseQuery User { get; set; }
+        
 
         public FeedBaseQuery(Feed feed)
         {
@@ -39,6 +40,8 @@ namespace emburns.PotatoModels
             Nsfw = feed.Nsfw;
             Sticky = feed.Sticky;
             User = new UserBaseQuery(feed.User);
+            Comments = CommentBaseQuery.FromCommentModelList(feed.Comments.OrderByDescending(x => x.Id).ToList());
+
             if (feed.Via.Id == 0)
             {
                 ParentUser = null;

@@ -7,6 +7,7 @@ namespace emburns.Models
     {
         public Feed()
         {
+            Comments = new HashSet<Comment>();
             InverseParent = new HashSet<Feed>();
         }
 
@@ -27,6 +28,7 @@ namespace emburns.Models
         public virtual Feed Parent { get; set; } = null!;
         public virtual User User { get; set; } = null!;
         public virtual User Via { get; set; } = null!;
+        public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Feed> InverseParent { get; set; }
     }
 }

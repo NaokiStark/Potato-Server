@@ -11,5 +11,8 @@ namespace emburns.Models
         public string Text { get; set; } = null!;
         public DateTime Created { get; set; }
         public bool Status { get; set; }
+
+        public virtual Post Post { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
     }
 }

@@ -39,7 +39,6 @@ namespace emburns.Models
         public virtual DbSet<UsersRequest> UsersRequests { get; set; } = null!;
 
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("utf8mb4_general_ci")
@@ -103,6 +102,10 @@ namespace emburns.Models
             {
                 entity.ToTable("comments");
 
+                entity.HasIndex(e => e.Postid, "FEED_COMMENTS_FK");
+
+                entity.HasIndex(e => e.Userid, "FEED_COMMENTS_USER_FK");
+
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
@@ -126,11 +129,27 @@ namespace emburns.Models
                 entity.Property(e => e.Userid)
                     .HasColumnType("int(255)")
                     .HasColumnName("userid");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.Postid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FEED_COMMENTS_FK");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.Userid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FEED_COMMENTS_USER_FK");
             });
 
             modelBuilder.Entity<Community>(entity =>
             {
                 entity.ToTable("communities");
+
+                entity.HasIndex(e => e.CategoryId, "COMMUNITY_CATEGORY_FK");
+
+                entity.HasIndex(e => e.Creator, "COMMUNITY_CREATOR_FK");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -176,6 +195,18 @@ namespace emburns.Models
                 entity.Property(e => e.Status)
                     .HasColumnType("int(11)")
                     .HasColumnName("status");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.Communities)
+                    .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("COMMUNITY_CATEGORY_FK");
+
+                entity.HasOne(d => d.CreatorNavigation)
+                    .WithMany(p => p.Communities)
+                    .HasForeignKey(d => d.Creator)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("COMMUNITY_CREATOR_FK");
             });
 
             modelBuilder.Entity<Feed>(entity =>
@@ -470,6 +501,10 @@ namespace emburns.Models
             {
                 entity.ToTable("posts");
 
+                entity.HasIndex(e => e.Creator, "POSTS_USER_FK");
+
+                entity.HasIndex(e => e.CommunityId, "POST_COMMUNITY_ID");
+
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
@@ -512,6 +547,18 @@ namespace emburns.Models
                 entity.Property(e => e.Title)
                     .HasMaxLength(500)
                     .HasColumnName("title");
+
+                entity.HasOne(d => d.Community)
+                    .WithMany(p => p.Posts)
+                    .HasForeignKey(d => d.CommunityId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("POST_COMMUNITY_ID");
+
+                entity.HasOne(d => d.CreatorNavigation)
+                    .WithMany(p => p.Posts)
+                    .HasForeignKey(d => d.Creator)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("POSTS_USER_FK");
             });
 
             modelBuilder.Entity<PostCategory>(entity =>
@@ -543,6 +590,10 @@ namespace emburns.Models
             {
                 entity.ToTable("post_comments");
 
+                entity.HasIndex(e => e.Postid, "POST_COMMENTS_FK");
+
+                entity.HasIndex(e => e.Userid, "POST_COMMENT_USER_FK");
+
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
@@ -566,6 +617,18 @@ namespace emburns.Models
                 entity.Property(e => e.Userid)
                     .HasColumnType("int(255)")
                     .HasColumnName("userid");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.PostComments)
+                    .HasForeignKey(d => d.Postid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("POST_COMMENTS_FK");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.PostComments)
+                    .HasForeignKey(d => d.Userid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("POST_COMMENT_USER_FK");
             });
 
             modelBuilder.Entity<Rank>(entity =>
