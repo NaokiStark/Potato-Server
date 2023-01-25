@@ -44,13 +44,7 @@ namespace emburns.Controllers
                     .Select(f => new FeedBaseQuery(f))
                     .Skip(limit * page).Take(limit).ToListAsync();
 
-                // Ulgy way, I dont find a way to do this much more efficient AT the moment
-                for (int i = 0; i < feedItems.Count; i++)
-                {
-                    feedItems[i].User.RankName = _ranks
-                        .Where(r => decimal.Truncate(r.RequiredPoints) == decimal.Truncate(feedItems[i].User.Rank))
-                        .ToList().FirstOrDefault().Fullname;
-                }
+                feedItems.ForEach(f => f.User.FetchUserRank(_ranks));
 
                 return Ok(feedItems);
             }
@@ -87,9 +81,8 @@ namespace emburns.Controllers
                     return NotFound(new { message = "Not Found" });
                 }
 
-                feedItem.User.RankName = _ranks
-                        .Where(r => decimal.Truncate(r.RequiredPoints) == decimal.Truncate(feedItem.User.Rank))
-                        .ToList().FirstOrDefault().Fullname;
+                feedItem.User.FetchUserRank(_ranks);
+                feedItem.Comments.ForEach(c => c.User.FetchUserRank(_ranks));
 
                 return Ok(feedItem);
             }
@@ -120,13 +113,7 @@ namespace emburns.Controllers
                     .Select(f => new FeedBaseQuery(f))
                     .Skip(limit * page).Take(limit).ToListAsync();
 
-                // Ulgy way, I dont find a way to do this much more efficient AT the moment
-                for (int i = 0; i < feedItems.Count; i++)
-                {
-                    feedItems[i].User.RankName = _ranks
-                        .Where(r => decimal.Truncate(r.RequiredPoints) == decimal.Truncate(feedItems[i].User.Rank))
-                        .ToList().FirstOrDefault().Fullname;
-                }
+                feedItems.ForEach(f => f.User.FetchUserRank(_ranks));
 
                 return Ok(feedItems);
             }
@@ -157,18 +144,7 @@ namespace emburns.Controllers
                 .Select(f => new FeedBaseQuery(f))
                     .Skip(limit * page).Take(limit).ToListAsync();
 
-                if (feedItems.Count > 0)
-                {
-                    string rankName = _ranks
-                            .Where(r => decimal.Truncate(r.RequiredPoints) == decimal.Truncate(feedItems[0].User.Rank))
-                            .ToList().FirstOrDefault().Fullname;
-
-                    // Ulgy way, I dont find a way to do this much more efficient AT the moment
-                    for (int i = 0; i < feedItems.Count; i++)
-                    {
-                        feedItems[i].User.RankName = rankName;
-                    }
-                }
+                feedItems.ForEach(f => f.User.FetchUserRank(_ranks));
 
                 return Ok(feedItems);
             }
@@ -199,18 +175,7 @@ namespace emburns.Controllers
                 .Select(f => new FeedBaseQuery(f))
                     .Skip(limit * page).Take(limit).ToListAsync();
 
-                if (feedItems.Count > 0)
-                {
-                    string rankName = _ranks
-                            .Where(r => decimal.Truncate(r.RequiredPoints) == decimal.Truncate(feedItems[0].User.Rank))
-                            .ToList().FirstOrDefault().Fullname;
-
-                    // Ulgy way, I dont find a way to do this much more efficient AT the moment
-                    for (int i = 0; i < feedItems.Count; i++)
-                    {
-                        feedItems[i].User.RankName = rankName;
-                    }
-                }
+                feedItems.ForEach(f => f.User.FetchUserRank(_ranks));
 
                 return Ok(feedItems);
             }

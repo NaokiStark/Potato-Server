@@ -23,12 +23,9 @@ namespace emburns.Controllers
         }
 
 
-
         [HttpGet("name")]
         public async Task<IActionResult> GetByUsername(string username, bool searchMode = false)
         {
-            //RankName = _context.Ranks.Where(r => u.Rank >= r.RequiredPoints).FirstOrDefault().Fullname,
-
             try
             {
                 List<UserBaseQuery> userList;
@@ -52,14 +49,7 @@ namespace emburns.Controllers
                     .ToListAsync();
                 }
 
-
-                // Ulgy way, I dont find a way to do this much more efficient AT the moment
-                for (int i = 0; i < userList.Count; i++){
-                    userList[i].RankName = _ranks
-                        .Where(r => decimal.Truncate(r.RequiredPoints) == decimal.Truncate(userList[i].Rank))
-                        .ToList().FirstOrDefault().Fullname;
-                }
-
+                userList.ForEach(u => u.FetchUserRank(_ranks));
 
                 return Ok(userList);
             }
@@ -88,9 +78,7 @@ namespace emburns.Controllers
                     return NotFound(new { message = "Not Found" });
                 }
 
-                userItem.RankName = _ranks
-                        .Where(r => decimal.Truncate(r.RequiredPoints) == decimal.Truncate(userItem.Rank))
-                        .ToList().FirstOrDefault().Fullname;
+                userItem.FetchUserRank(_ranks);
 
                 return Ok(userItem);
             }

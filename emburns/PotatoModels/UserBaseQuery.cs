@@ -1,5 +1,6 @@
 ﻿using emburns.Models;
 using emburns.PotatoModels.Extras;
+using System;
 
 namespace emburns.PotatoModels
 {
@@ -38,5 +39,13 @@ namespace emburns.PotatoModels
             Donation = userModel.Donation;            
         }
 
+        public void FetchUserRank(IEnumerable<RankValue> ranks)
+        {
+            string rank = ranks
+                        .Where(r => decimal.Truncate(r.RequiredPoints) == decimal.Truncate(Rank))
+                        .ToList().FirstOrDefault().Fullname;
+
+            RankName = rank;
+        }
     }
 }
