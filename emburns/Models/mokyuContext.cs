@@ -38,7 +38,6 @@ namespace emburns.Models
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UsersRequest> UsersRequests { get; set; } = null!;
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("utf8mb4_general_ci")
@@ -352,6 +351,12 @@ namespace emburns.Models
                 entity.HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
+                entity.HasIndex(e => e.Post, "FEED_LOVES_FEED_FK");
+
+                entity.HasIndex(e => e.Reaction, "FEED_LOVES_REACTION_FK");
+
+                entity.HasIndex(e => e.Userid, "FEED_LOVES_USERS_FK");
+
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
@@ -360,9 +365,32 @@ namespace emburns.Models
                     .HasColumnType("int(11)")
                     .HasColumnName("post");
 
+                entity.Property(e => e.Reaction)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("reaction")
+                    .HasDefaultValueSql("'1'");
+
                 entity.Property(e => e.Userid)
                     .HasColumnType("int(11)")
                     .HasColumnName("userid");
+
+                entity.HasOne(d => d.PostNavigation)
+                    .WithMany(p => p.LovesNavigation)
+                    .HasForeignKey(d => d.Post)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FEED_LOVES_FEED_FK");
+
+                entity.HasOne(d => d.ReactionNavigation)
+                    .WithMany(p => p.Loves)
+                    .HasForeignKey(d => d.Reaction)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FEED_LOVES_REACTION_FK");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Loves)
+                    .HasForeignKey(d => d.Userid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FEED_LOVES_USERS_FK");
             });
 
             modelBuilder.Entity<Log>(entity =>

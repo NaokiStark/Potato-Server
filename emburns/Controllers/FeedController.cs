@@ -2,11 +2,7 @@
 using emburns.PotatoModels;
 using emburns.PotatoModels.Extras;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace emburns.Controllers
 {
@@ -40,6 +36,13 @@ namespace emburns.Controllers
                 var feedItems = await _context.Feeds.AsNoTracking()
                     .Include(f => f.User)
                     .Include(f => f.Via)
+
+                    .Include(f => f.LovesNavigation)
+                    .ThenInclude(l => l.User)
+
+                    .Include(f => f.LovesNavigation)
+                    .ThenInclude(l => l.ReactionNavigation)
+
                     .OrderByDescending(f => f.Id)
                     .Select(f => new FeedBaseQuery(f))
                     .Skip(limit * page).Take(limit).ToListAsync();
@@ -68,8 +71,16 @@ namespace emburns.Controllers
                 var feedItems = await _context.Feeds.AsNoTracking()
                     .Include(f => f.User)
                     .Include(f => f.Via)
+
                     .Include(f => f.Comments)
                     .ThenInclude(f => f.User)
+
+                    .Include(f => f.LovesNavigation)
+                    .ThenInclude(l => l.User)
+
+                    .Include(f => f.LovesNavigation)
+                    .ThenInclude(l => l.ReactionNavigation)
+
                     .Where(f => f.Id == id)
                     .Select(f => new FeedBaseQuery(f))
                     .ToListAsync();
@@ -108,6 +119,13 @@ namespace emburns.Controllers
                 var feedItems = await _context.Feeds.AsNoTracking()
                     .Include(f => f.User)
                     .Include(f => f.Via)
+
+                    .Include(f => f.LovesNavigation)
+                    .ThenInclude(l => l.User)
+
+                    .Include(f => f.LovesNavigation)
+                    .ThenInclude(l => l.ReactionNavigation)
+
                     .Where(f => f.Text.Contains(query))
                     .OrderByDescending(f => f.Id)
                     .Select(f => new FeedBaseQuery(f))
@@ -139,6 +157,13 @@ namespace emburns.Controllers
                 var feedItems = await _context.Feeds.AsNoTracking()
                     .Include(f => f.User)
                     .Include(f => f.Via)
+
+                    .Include(f => f.LovesNavigation)
+                    .ThenInclude(l => l.User)
+
+                    .Include(f => f.LovesNavigation)
+                    .ThenInclude(l => l.ReactionNavigation)
+
                     .Where(f => f.User.Id == id)
                 .OrderByDescending(f => f.Id)
                 .Select(f => new FeedBaseQuery(f))
@@ -170,6 +195,13 @@ namespace emburns.Controllers
                 var feedItems = await _context.Feeds.AsNoTracking()
                     .Include(f => f.User)
                     .Include(f => f.Via)
+
+                    .Include(f => f.LovesNavigation)
+                    .ThenInclude(l => l.User)
+
+                    .Include(f => f.LovesNavigation)
+                    .ThenInclude(l => l.ReactionNavigation)
+
                     .Where(f => f.User.User1 == username)
                 .OrderByDescending(f => f.Id)
                 .Select(f => new FeedBaseQuery(f))

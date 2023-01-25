@@ -9,6 +9,7 @@ namespace emburns.Models
         {
             Comments = new HashSet<Comment>();
             InverseParent = new HashSet<Feed>();
+            LovesNavigation = new HashSet<Lofe>();
         }
 
         public int Id { get; set; }
@@ -30,5 +31,6 @@ namespace emburns.Models
         public virtual User Via { get; set; } = null!;
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Feed> InverseParent { get; set; }
+        public virtual ICollection<Lofe> LovesNavigation { get; set; }
     }
 }

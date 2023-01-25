@@ -11,6 +11,7 @@ namespace emburns.Models
             Communities = new HashSet<Community>();
             FeedUsers = new HashSet<Feed>();
             FeedVia = new HashSet<Feed>();
+            Loves = new HashSet<Lofe>();
             PostComments = new HashSet<PostComment>();
             Posts = new HashSet<Post>();
         }
@@ -42,6 +43,7 @@ namespace emburns.Models
         public virtual ICollection<Community> Communities { get; set; }
         public virtual ICollection<Feed> FeedUsers { get; set; }
         public virtual ICollection<Feed> FeedVia { get; set; }
+        public virtual ICollection<Lofe> Loves { get; set; }
         public virtual ICollection<PostComment> PostComments { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
     }

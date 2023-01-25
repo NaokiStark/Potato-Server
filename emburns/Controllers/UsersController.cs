@@ -1,11 +1,8 @@
 ﻿using emburns.Models;
 using emburns.PotatoModels;
 using emburns.PotatoModels.Extras;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using System.Linq;
 
 namespace emburns.Controllers
 {

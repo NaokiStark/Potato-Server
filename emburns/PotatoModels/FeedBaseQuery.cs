@@ -21,7 +21,7 @@ namespace emburns.PotatoModels
         public UserBaseQuery? ParentUser { get; set; }
         public List<CommentBaseQuery>? Comments { get; set; }
         public virtual UserBaseQuery User { get; set; }
-        
+        public List<LoveQuery> LovesList { get; set; }
 
         public FeedBaseQuery(Feed feed)
         {
@@ -36,11 +36,21 @@ namespace emburns.PotatoModels
             Created = feed.Created;
             Status = feed.Status;
             Wall = feed.Wall;
-            Loves = feed.Loves;
             Nsfw = feed.Nsfw;
             Sticky = feed.Sticky;
             User = new UserBaseQuery(feed.User);
             Comments = CommentBaseQuery.FromCommentModelList(feed.Comments.OrderByDescending(x => x.Id).ToList());
+            
+            if(feed.LovesNavigation != null)
+            {
+                LovesList = LoveQuery.GetAll(feed.LovesNavigation);
+            }
+            else
+            {
+                LovesList = new List<LoveQuery>();
+            }
+
+            Loves = LovesList.Count;
 
             if (feed.Via.Id == 0)
             {
