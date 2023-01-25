@@ -20,11 +20,30 @@ QUE ES ESO, digo el anterior estaba en base a CodeIgniter y estaba recontra obso
 
 - MariaDB (Recomendadísimo) >=10.3 o MySQL >= 8.0
 - Visual Studio 2022 y/o dotnet6 (SDK, ASP SDK)
+- Microsoft.EntityFrameworkCore.Design
 
 ### Deploy
 
-Modificar `appsettings.json` el connection string de la base de datos MySQL (TIENE QUE SER MYSQL)
-Hacer migration en la consola `update-database` (creo que era así, no me acuerdo bien. despues borro esto xd)
+No olvidar instalar Entity Framework 
+
+`dotnet tool install --global dotnet-ef`
+
+Y EF Desing (ver 6.0.13 obligatorio)
+
+`dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.13`
+
+#### Pasos
+
+- Modificar `appsettings.json` el connection string de la base de datos MySQL (TIENE QUE SER MYSQL)
+
+- Crear un Migration
+
+`dotnet ef migrations add initial`
+
+- Ejecutar update para crear la estructura en la base de datos
+
+`dotnet ef database update`
+
 
 Debug
 
