@@ -3,6 +3,7 @@ using emburns.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
+const string CORSOrigins = "_emburnscors";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,6 +28,18 @@ builder.Services.AddControllers().AddJsonOptions(opt =>
     opt.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CORSOrigins, policy =>
+    {
+        policy
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .WithOrigins("http://localhost", "http://localhost:8080", "https://emburns.fabi.pw");
+
+    });
+});
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -47,10 +60,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//ToDo: make this better
+ConfigurationBridge.ConfigManager = builder.Configuration;
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors(CORSOrigins);
 
 app.Run();

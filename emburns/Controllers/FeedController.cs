@@ -165,8 +165,8 @@ namespace emburns.Controllers
                     .ThenInclude(l => l.ReactionNavigation)
 
                     .Where(f => f.User.Id == id)
-                .OrderByDescending(f => f.Id)
-                .Select(f => new FeedBaseQuery(f))
+                    .OrderByDescending(f => f.Id)
+                    .Select(f => new FeedBaseQuery(f))
                     .Skip(limit * page).Take(limit).ToListAsync();
 
                 feedItems.ForEach(f => f.User.FetchUserRank(_ranks));
