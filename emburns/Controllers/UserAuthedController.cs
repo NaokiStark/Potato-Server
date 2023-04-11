@@ -2,6 +2,7 @@
 using emburns.PotatoModels;
 using emburns.PotatoModels.Auth;
 using emburns.PotatoModels.Extras;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,25 +34,42 @@ namespace emburns.Controllers
             {
                 var userQuery = await _context.Users
                     .Where(u => u.User1.ToLower() == userLogin.User.ToLower())
-                    .Select(u => new UserBaseQuery(u))
+                    .Select(u => new { data = new UserBaseQuery(u), u.Password })
                     .ToListAsync();
 
-                UserBaseQuery user = userQuery.FirstOrDefault();
-                user.FetchUserRank(_ranks);
+                var user = userQuery.FirstOrDefault();
 
                 if (user == null) {
                     throw new Exception("User not found");
                 }
 
-                string jwt = userLogin.GetToken(user);
+                user.data.FetchUserRank(_ranks);
+
+                var loginCheck = userLogin.VerifyHashedPassword(user.Password, userLogin.Password);
+
+                if (!loginCheck)
+                {
+                    throw new Exception("Usuario y/o contraseña incorrectos.");
+                }
+
+                string jwt = userLogin.GetToken(user.data);
 
                 //return Ok(new { password = hashedPassword });
-                return Ok(new { jwttoken = jwt });
+                return Ok(new {userData = user.data, token = jwt });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = $"{ex.Message}\n{ex.StackTrace}" });
             }
         }
+
+        [Authorize]
+        [HttpGet("testlogin")]
+        public IActionResult TestAuthToken()
+        {
+            return Ok("Token passed");
+        }
+
+        
     }
 }

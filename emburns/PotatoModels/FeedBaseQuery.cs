@@ -52,7 +52,8 @@ namespace emburns.PotatoModels
 
             Loves = LovesList.Count;
 
-            if (feed.Via.Id == 0)
+            
+            if (feed.Via == null || feed.Via.Id == 0)
             {
                 ParentUser = null;
             }

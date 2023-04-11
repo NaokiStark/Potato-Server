@@ -1,7 +1,10 @@
 using emburns.Models;
 using emburns.Utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 const string CORSOrigins = "_emburnscors";
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +31,7 @@ builder.Services.AddControllers().AddJsonOptions(opt =>
     opt.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
 });
 
+// Cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(CORSOrigins, policy =>
@@ -35,11 +39,12 @@ builder.Services.AddCors(options =>
         policy
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .WithOrigins("http://localhost", "http://localhost:8080", "https://emburns.fabi.pw");
+        .WithOrigins("http://localhost", "https://localhost", "http://localhost:8080", "https://localhost:8080", "https://emburns.fabi.pw");
 
     });
 });
 
+// Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -47,9 +52,31 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Title = "Potato Server",
         Description = "Servicio API para emburns",
-        TermsOfService = new Uri("https://emburns.fabi.pw/terms"),        
+        TermsOfService = new Uri("https://emburns.fabi.pw/terms"),
     });
 });
+
+// JWT
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+{
+    string jwtauthtoken = builder.Configuration.GetSection("Auth:JWTKey").Get<string>();
+
+    opt.RequireHttpsMetadata = false;
+    opt.SaveToken = true;
+    var skey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtauthtoken));
+    opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+    {
+        IssuerSigningKey = skey,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true
+    };
+});
+
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
@@ -65,10 +92,13 @@ ConfigurationBridge.ConfigManager = builder.Configuration;
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.UseCors(CORSOrigins);
+
 
 app.Run();
