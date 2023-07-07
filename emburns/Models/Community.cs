@@ -7,6 +7,7 @@ namespace emburns.Models
     {
         public Community()
         {
+            CommunitiesMembers = new HashSet<CommunitiesMember>();
             Posts = new HashSet<Post>();
         }
 
@@ -20,10 +21,10 @@ namespace emburns.Models
         public string Background { get; set; } = null!;
         public DateTime Created { get; set; }
         public int Status { get; set; }
-        public string Members { get; set; } = null!;
 
         public virtual PostCategory Category { get; set; } = null!;
         public virtual User CreatorNavigation { get; set; } = null!;
+        public virtual ICollection<CommunitiesMember> CommunitiesMembers { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
     }
 }

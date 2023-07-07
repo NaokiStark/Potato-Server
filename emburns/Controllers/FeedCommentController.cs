@@ -2,6 +2,7 @@
 using emburns.PotatoModels;
 using emburns.PotatoModels.Enums;
 using emburns.PotatoModels.Extras;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +36,7 @@ namespace emburns.Controllers
          * I Used FeedSchemma to save time, ToDo: create a new input type
          */
         // POST api/comment
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post(CommentSchemma feed)
         {
@@ -82,8 +84,12 @@ namespace emburns.Controllers
 
                 _ = await _context.SaveChangesAsync();
 
-                return Ok(new { message = "Comentario agregado Correctamente",
-                    id = $"{newComment.Id}" });
+                return Ok(new
+                {
+                    message = "Comentario agregado Correctamente",
+                    id = $"{newComment.Id}",
+                    item = new CommentBaseQuery(newComment),
+                });
 
             }
             catch (Exception ex)

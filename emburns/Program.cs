@@ -39,8 +39,8 @@ builder.Services.AddCors(options =>
         policy
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .WithOrigins("http://localhost", "https://localhost", "http://localhost:8080", "https://localhost:8080", "https://emburns.fabi.pw");
-
+        .WithOrigins("http://localhost", "https://localhost", "http://localhost:8080", "https://localhost:8080", "https://emburns.fabi.pw", "http://192.168.100.6:8080");
+        
     });
 });
 
@@ -90,6 +90,8 @@ if (app.Environment.IsDevelopment())
 //ToDo: make this better
 ConfigurationBridge.ConfigManager = builder.Configuration;
 
+app.UseCors(CORSOrigins);
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -97,8 +99,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseCors(CORSOrigins);
 
 
 app.Run();

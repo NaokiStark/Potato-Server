@@ -1,6 +1,7 @@
 ﻿using emburns.Models;
 using emburns.PotatoModels.Extras;
 using System;
+using System.Text.Json;
 
 namespace emburns.PotatoModels
 {
@@ -21,6 +22,8 @@ namespace emburns.PotatoModels
         public string? RankName { get; set; }
         public DateOnly Donation { get; set; }
 
+        public List<int> BadgesId { get; set; } = new List<int>();
+
         public UserBaseQuery(User userModel)
         {
             Id = userModel.Id;
@@ -36,7 +39,20 @@ namespace emburns.PotatoModels
             Admin = userModel.Admin;
             Rank = userModel.Rank;
             Quote = userModel.Quote;
-            Donation = userModel.Donation;            
+            Donation = userModel.Donation;
+
+            if (!string.IsNullOrWhiteSpace(userModel.Badges))
+            {
+                BadgesId = JsonSerializer.Deserialize<List<int>>(userModel.Badges);
+            }
+        }
+        /// <summary>
+        /// Gets empty UserBaseQuery only with id
+        /// </summary>
+        /// <param name="id"></param>
+        public UserBaseQuery(int id)
+        {
+            Id = id;
         }
 
         public void FetchUserRank(IEnumerable<RankValue> ranks)

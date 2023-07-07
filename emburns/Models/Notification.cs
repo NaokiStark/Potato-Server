@@ -8,8 +8,8 @@ namespace emburns.Models
         public int Id { get; set; }
         public int Type { get; set; }
         public int Userid { get; set; }
-        public int Interventor { get; set; }
-        public string Link { get; set; } = null!;
+        public int From { get; set; }
+        public string Info { get; set; } = null!;
         public bool Readed { get; set; }
         public bool Wsqueue { get; set; }
         public bool? Listable { get; set; }

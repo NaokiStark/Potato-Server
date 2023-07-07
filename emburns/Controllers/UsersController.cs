@@ -84,6 +84,37 @@ namespace emburns.Controllers
                 return StatusCode(500, new { message = $"{ex.Message}\n{ex.StackTrace}" });
             }
         }
+
+        [HttpGet("userStats/{id}")]
+        public async Task<IActionResult> getUserStatsById(int id)
+        {
+            try
+            {
+                var userList = await _context.Users
+                     .OrderBy(u => u.Id)
+                     .Where(u => u.Id == id)
+                     .Select(u => new UserBaseQuery(u))
+                     .ToListAsync();
+
+                var userItem = userList.FirstOrDefault();
+
+                if (userItem == null)
+                {
+                    return NotFound(new { message = "Not Found" });
+                }
+
+                var badges = await _context.UserBadges
+                    .Where(b => userItem.BadgesId.Contains(b.Id)).ToListAsync();
+
+                var userStats = new UserStats(badges);
+
+                return Ok(userStats);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = $"{ex.Message}\n{ex.StackTrace}" });
+            }
+        }
     }
 
 }

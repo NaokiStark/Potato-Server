@@ -1,4 +1,5 @@
 ﻿using emburns.Models;
+using System.Text.RegularExpressions;
 
 namespace emburns.PotatoModels
 {
@@ -15,14 +16,27 @@ namespace emburns.PotatoModels
         public int CommunityId { get; set; }
         public CommunityQueryBase Community { get; set; }
 
-        public PostBaseQuery(Post post)
+        public PostBaseQuery(Post post, bool includeMetadata = false)
         {
             Id = post.Id;
             CreatorId = post.Creator;
             User = new UserBaseQuery(post.CreatorNavigation);
             Title = post.Title;
-            Body = post.Body;
+            if (includeMetadata)
+            {
+                Body = post.Body;
+            }
+            else
+            {
+                Body = "Body empty, try to change includeMetadata to true";
+            }
+
             Caption = post.Caption;
+            if (string.IsNullOrWhiteSpace(post.Caption))
+            {
+                Caption = post.Community.Avatar;
+            }
+
             Points = post.Points;
             Created = post.Created;
             Status = post.Status;

@@ -9,6 +9,7 @@ namespace emburns.Models
         {
             Comments = new HashSet<Comment>();
             Communities = new HashSet<Community>();
+            CommunitiesMembers = new HashSet<CommunitiesMember>();
             FeedUsers = new HashSet<Feed>();
             FeedVia = new HashSet<Feed>();
             Loves = new HashSet<Lofe>();
@@ -38,9 +39,11 @@ namespace emburns.Models
         public DateOnly Donation { get; set; }
         public int RemainPoints { get; set; }
         public int PointDate { get; set; }
+        public string Badges { get; set; } = null!;
 
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Community> Communities { get; set; }
+        public virtual ICollection<CommunitiesMember> CommunitiesMembers { get; set; }
         public virtual ICollection<Feed> FeedUsers { get; set; }
         public virtual ICollection<Feed> FeedVia { get; set; }
         public virtual ICollection<Lofe> Loves { get; set; }

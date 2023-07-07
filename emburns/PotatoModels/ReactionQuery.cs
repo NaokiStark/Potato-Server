@@ -6,9 +6,11 @@ namespace emburns.PotatoModels
     {
         public string ReactionText { get; set; } = null!;
         public string ReactionEmoji { get; set; } = null!;
-        public ReactionQuery(ReactionsList reaction) {
+        public ReactionQuery(ReactionsList reaction)
+        {
             ReactionText = reaction.ReactionText;
             ReactionEmoji = reaction.ReactionEmoji;
         }
+        public ReactionQuery() { }
     }
 }

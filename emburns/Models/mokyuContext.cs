@@ -19,6 +19,7 @@ namespace emburns.Models
         public virtual DbSet<Block> Blocks { get; set; } = null!;
         public virtual DbSet<CiSession> CiSessions { get; set; } = null!;
         public virtual DbSet<Comment> Comments { get; set; } = null!;
+        public virtual DbSet<CommunitiesMember> CommunitiesMembers { get; set; } = null!;
         public virtual DbSet<Community> Communities { get; set; } = null!;
         public virtual DbSet<Feed> Feeds { get; set; } = null!;
         public virtual DbSet<Follow> Follows { get; set; } = null!;
@@ -36,7 +37,17 @@ namespace emburns.Models
         public virtual DbSet<Reaction> Reactions { get; set; } = null!;
         public virtual DbSet<ReactionsList> ReactionsLists { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserBadge> UserBadges { get; set; } = null!;
         public virtual DbSet<UsersRequest> UsersRequests { get; set; } = null!;
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseMySql("server=localhost;database=mokyu;user=root", Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.4.18-mariadb"));
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -142,6 +153,44 @@ namespace emburns.Models
                     .HasConstraintName("FEED_COMMENTS_USER_FK");
             });
 
+            modelBuilder.Entity<CommunitiesMember>(entity =>
+            {
+                entity.ToTable("communities_members");
+
+                entity.HasIndex(e => e.CommunityId, "fk_comm_id");
+
+                entity.HasIndex(e => e.UserId, "fk_user_id");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CommunityId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("community_id");
+
+                entity.Property(e => e.JoinDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("join_date")
+                    .HasDefaultValueSql("current_timestamp()");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("user_id");
+
+                entity.HasOne(d => d.Community)
+                    .WithMany(p => p.CommunitiesMembers)
+                    .HasForeignKey(d => d.CommunityId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_comm_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.CommunitiesMembers)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_user_id");
+            });
+
             modelBuilder.Entity<Community>(entity =>
             {
                 entity.ToTable("communities");
@@ -182,10 +231,6 @@ namespace emburns.Models
                 entity.Property(e => e.Description)
                     .HasMaxLength(500)
                     .HasColumnName("description");
-
-                entity.Property(e => e.Members)
-                    .HasColumnType("text")
-                    .HasColumnName("members");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(256)
@@ -455,13 +500,13 @@ namespace emburns.Models
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
 
-                entity.Property(e => e.Interventor)
+                entity.Property(e => e.From)
                     .HasColumnType("int(11)")
-                    .HasColumnName("interventor");
+                    .HasColumnName("from");
 
-                entity.Property(e => e.Link)
-                    .HasColumnType("text")
-                    .HasColumnName("link")
+                entity.Property(e => e.Info)
+                    .HasMaxLength(1000)
+                    .HasColumnName("info")
                     .UseCollation("utf8_general_ci")
                     .HasCharSet("utf8");
 
@@ -748,6 +793,11 @@ namespace emburns.Models
                     .UseCollation("utf8_general_ci")
                     .HasCharSet("utf8");
 
+                entity.Property(e => e.Badges)
+                    .HasMaxLength(500)
+                    .HasColumnName("badges")
+                    .HasDefaultValueSql("'[]'");
+
                 entity.Property(e => e.Country)
                     .HasMaxLength(250)
                     .HasColumnName("country")
@@ -795,7 +845,7 @@ namespace emburns.Models
                     .HasCharSet("utf8");
 
                 entity.Property(e => e.Password)
-                    .HasMaxLength(256)
+                    .HasMaxLength(500)
                     .HasColumnName("password")
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
@@ -833,6 +883,27 @@ namespace emburns.Models
                     .HasColumnName("wshash")
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
+            });
+
+            modelBuilder.Entity<UserBadge>(entity =>
+            {
+                entity.ToTable("user_badges");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(256)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Icon)
+                    .HasMaxLength(100)
+                    .HasColumnName("icon");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(100)
+                    .HasColumnName("title");
             });
 
             modelBuilder.Entity<UsersRequest>(entity =>
