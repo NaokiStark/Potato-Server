@@ -15,7 +15,7 @@ namespace emburns.PotatoModels
         {
             Id = comment.Id;
             Postid = comment.Postid;
-            Text = comment.Text;
+            Text = comment.Text.Replace("\n", "<br>"); 
             Created = comment.Created;
             Status = comment.Status;
             User = new UserBaseQuery(comment.User);

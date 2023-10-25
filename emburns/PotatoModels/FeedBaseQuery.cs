@@ -28,7 +28,7 @@ namespace emburns.PotatoModels
 
             Id = feed.Id;
             Userid = feed.Userid;
-            Text = feed.Text;
+            Text = feed.Text.Replace("\n", "<br>");
             Attachment = feed.Attachment;
             AttachmentType = feed.AttachmentType;
             ViaId = feed.ViaId;

@@ -1,4 +1,5 @@
-﻿using emburns.Models;
+﻿using emburns.Media;
+using emburns.Models;
 using emburns.PotatoModels;
 using emburns.PotatoModels.Enums;
 using emburns.PotatoModels.Extras;
@@ -85,6 +86,38 @@ namespace emburns.Controllers
                     item = new FeedBaseQuery(newFeed),
                 });
 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"{ex.Message}\n{ex.StackTrace}" });
+            }
+        }
+
+        [Authorize]
+        [HttpPost("attachment")]
+        public async Task<IActionResult> CheckAttachment([FromForm]PostedAttachment attachment)
+        {
+            try
+            {
+
+                var mediaService = new MediaService(attachment);
+
+                if (mediaService.Status != ValidationStatus.Ok)
+                {
+                    throw new Exception($"El adjunto es inválido: {mediaService.Status.ToString()}");
+                }
+
+                return Ok(new
+                {
+                    message = "Attachment accepted",
+                    attachment = new FeedAttachment("")
+                    {
+                        Id = mediaService.Attachment.Id,
+                        Provider = mediaService.Attachment.Provider,
+                        Raw = mediaService.Attachment.Raw,
+                        Type = mediaService.Attachment.Type,
+                    }
+                });
             }
             catch (Exception ex)
             {

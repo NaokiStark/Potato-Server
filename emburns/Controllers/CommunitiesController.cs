@@ -45,8 +45,7 @@ namespace emburns.Controllers
                     .Skip(page * limit)
                     .Take(limit)
                     .Select(c => new CommunityQueryBase(c, false))
-                    .ToListAsync()
-                    ;
+                    .ToListAsync();
 
                 return Ok(communities);
             }
@@ -71,7 +70,7 @@ namespace emburns.Controllers
 
                         .OrderByDescending(c => c.Id)
                         .Where(c => c.Status == 0)
-                                            .Where(c => c.Id == id)
+                        .Where(c => c.Id == id)
                         .Select(c => new CommunityQueryBase(c, withMembers))
                         .ToListAsync()
                         ;

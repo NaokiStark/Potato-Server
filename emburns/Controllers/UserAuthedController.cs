@@ -70,6 +70,36 @@ namespace emburns.Controllers
             return Ok("Token passed");
         }
 
-        
+        [Authorize]
+        [HttpGet("getLogin")]
+        public async Task<IActionResult> GetUserLoginData()
+        {
+            try
+            {
+                string username = User.Identity.Name;
+
+                var usersList = await _context.Users
+                        .OrderBy(u => u.Id)
+                        .Where(u => u.User1 == username)
+                        .Select(u => new UserBaseQuery(u))
+                        .Take(10)
+                        .ToListAsync();
+
+                var userItem = usersList.FirstOrDefault();
+
+                if (userItem == null)
+                {
+                    throw new Exception("Bad Request");
+                }
+
+                userItem.FetchUserRank(_ranks);
+
+                return Ok(userItem);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = $"{ex.Message}\n{ex.StackTrace}" });
+            }
+        }
     }
 }
